@@ -6,8 +6,7 @@
       },
       "tab_size": 2,
       "ensure_final_newline_on_save": true,
-      "remove_trailing_whitespace_on_save": true,
-      "language_servers": ["typescript-language-server", "!vtsls", "..."]
+      "remove_trailing_whitespace_on_save": true
     }
   },
   "TSX": {
@@ -16,7 +15,6 @@
     },
     "tab_size": 2,
     "ensure_final_newline_on_save": true,
-    "remove_trailing_whitespace_on_save": true,
-    "language_servers": ["typescript-language-server", "!vtsls", "..."]
+    "remove_trailing_whitespace_on_save": true
   }
 }
