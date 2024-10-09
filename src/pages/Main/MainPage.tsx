@@ -2,10 +2,10 @@ import { FC } from 'react';
 import PlaceCard from '@/components/PlaceCard/PlaceCard';
 
 type MainPageProps = {
-  places: number;
+  nPlaces: number;
 };
 
-const MainPage: FC<MainPageProps> = ({ places }) => (
+const MainPage: FC<MainPageProps> = ({ nPlaces: places }) => (
   <div className='page page--gray page--main'>
     <header className='header'>
       <div className='container'>

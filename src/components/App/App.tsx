@@ -2,9 +2,11 @@ import MainPage from '@/pages/Main/MainPage';
 import { FC } from 'react';
 
 type AppProps = {
-  places: number;
+  nPlaces: number;
 };
 
-const App: FC<AppProps> = ({ places }) => <MainPage places={places} />;
+const App: FC<AppProps> = ({ nPlaces: places }) => (
+  <MainPage nPlaces={places} />
+);
 
 export default App;
