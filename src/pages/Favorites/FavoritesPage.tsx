@@ -1,4 +1,4 @@
-export default function Favorites() {
+export default function FavoritesPage() {
   return (
     <div className='page page--favorites-empty'>
       <header className='header'>
