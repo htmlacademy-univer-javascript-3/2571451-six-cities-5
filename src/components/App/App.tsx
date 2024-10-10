@@ -1,12 +1,9 @@
 import MainPage from '@/pages/Main/MainPage';
-import { FC } from 'react';
 
 type AppProps = {
-  nPlaces: number;
+  placesCount: number;
 };
 
-const App: FC<AppProps> = ({ nPlaces: places }) => (
-  <MainPage nPlaces={places} />
-);
-
-export default App;
+export default function App(props: AppProps) {
+  return <MainPage placesCount={props.placesCount} />;
+}
