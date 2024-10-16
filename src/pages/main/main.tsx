@@ -1,10 +1,10 @@
-import PlaceCard from '@/components/PlaceCard/PlaceCard';
+import Place from '@/components/place/card';
 
-export type MainPageProps = {
+export type MainProps = {
   placesCount: number;
 };
 
-export default function MainPage(props: MainPageProps) {
+export default function Main(props: MainProps) {
   return (
     <div className='page page--gray page--main'>
       <header className='header'>
@@ -118,11 +118,11 @@ export default function MainPage(props: MainPageProps) {
                 </ul>
               </form>
               <div className='cities__places-list places__list tabs__content'>
-                <PlaceCard />
-                <PlaceCard />
-                <PlaceCard />
-                <PlaceCard />
-                <PlaceCard />
+                <Place />
+                <Place />
+                <Place />
+                <Place />
+                <Place />
               </div>
             </section>
             <div className='cities__right-section'>

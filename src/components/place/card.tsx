@@ -1,4 +1,4 @@
-export default function PlaceCard(): JSX.Element {
+export default function Place(): JSX.Element {
   return (
     <article className='cities__card place-card'>
       <div className='place-card__mark'>
