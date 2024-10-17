@@ -7,19 +7,13 @@ import PageNotFound from '@/pages/404/404';
 import Favorites from '@/pages/favorites/favorites';
 import Offer from '@/pages/offer/offer';
 import PrivateRoute from '@/components/private-route/private-route';
+import { offers as mockOffers } from '@/mocks/offers';
 
-type AppProps = {
-  placesCount: number;
-};
-
-export default function App(props: AppProps) {
+export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path={AppRoute.Main}
-          element={<Main placesCount={props.placesCount} />}
-        />
+        <Route path={AppRoute.Main} element={<Main offers={mockOffers} />} />
         <Route path={AppRoute.Login} element={<Login />} />
         <Route path={AppRoute.Offer} element={<Offer />} />
         <Route
