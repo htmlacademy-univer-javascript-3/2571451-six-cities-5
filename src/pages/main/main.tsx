@@ -1,8 +1,8 @@
 import { OfferList } from '@/components/offer/list';
-import { Offer } from '@/types/offer';
+import { Place } from '@/types/place';
 
 export interface MainProps {
-  offers: Offer[];
+  offers: Place[];
 }
 
 export default function Main(props: MainProps) {

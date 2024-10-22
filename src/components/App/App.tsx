@@ -4,10 +4,13 @@ import '@/config';
 import { AppRoute } from '@/config';
 import Login from '@/pages/login/login';
 import PageNotFound from '@/pages/404/404';
-import Favorites from '@/pages/favorites/favorites';
+import { Favorites } from '@/pages/favorites/favorites';
 import Offer from '@/pages/offer/offer';
 import PrivateRoute from '@/components/private-route/private-route';
-import { offers as mockOffers } from '@/mocks/offers';
+import {
+  offers as mockOffers,
+  favorites as mockFavorites,
+} from '@/mocks/offers';
 
 export default function App() {
   return (
@@ -19,8 +22,8 @@ export default function App() {
         <Route
           path={AppRoute.Favorites}
           element={
-            <PrivateRoute auth={false}>
-              <Favorites />
+            <PrivateRoute auth={true}>
+              <Favorites offers={mockFavorites} />
             </PrivateRoute>
           }
         />

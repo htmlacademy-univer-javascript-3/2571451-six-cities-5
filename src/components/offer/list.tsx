@@ -1,9 +1,9 @@
 import React from 'react';
 import { OfferCard } from './card';
-import { Offer } from '@/types/offer';
+import { Place } from '@/types/place';
 
 export interface OfferListProps {
-  offers: Offer[];
+  offers: Place[];
 }
 
 export function OfferList(props: OfferListProps) {

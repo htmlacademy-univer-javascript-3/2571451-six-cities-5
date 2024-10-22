@@ -1,7 +1,7 @@
 import { City } from '@/types/city';
 import { Location } from '@/types/location';
 
-export interface Offer {
+export interface Place {
   id: string;
   title: string;
   type: string;
