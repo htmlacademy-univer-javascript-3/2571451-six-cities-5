@@ -22,7 +22,7 @@ export default function App() {
         <Route
           path={AppRoute.Favorites}
           element={
-            <PrivateRoute auth={true}>
+            <PrivateRoute auth>
               <Favorites offers={mockFavorites} />
             </PrivateRoute>
           }

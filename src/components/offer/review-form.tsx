@@ -13,6 +13,13 @@ export function ReviewForm() {
     });
   };
 
+  const handleReviewChange = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+    setReviewData({
+      ...reviewData,
+      review: evt.target.value,
+    });
+  };
+
   return (
     <form className='reviews__form form' action='#' method='post'>
       <label className='reviews__label form__label' htmlFor='review'>
@@ -120,12 +127,7 @@ export function ReviewForm() {
         name='review'
         placeholder='Tell how was your stay, what you like and what can be improved'
         value={reviewData.review}
-        onChange={(evt) =>
-          setReviewData({
-            ...reviewData,
-            review: evt.target.value,
-          })
-        }
+        onChange={handleReviewChange}
       />
       <div className='reviews__button-wrapper'>
         <p className='reviews__help'>
