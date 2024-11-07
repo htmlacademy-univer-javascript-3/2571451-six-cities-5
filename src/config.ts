@@ -4,3 +4,8 @@ export enum AppRoute {
   Favorites = '/favorites',
   Offer = '/offer/:id',
 }
+
+export const URL_MARKER =
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/pin.svg';
+export const URL_MARKER_ACTIVE =
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/main-pin.svg';

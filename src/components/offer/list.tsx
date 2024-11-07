@@ -4,10 +4,11 @@ import { Place } from '@/types/place';
 
 export interface OfferListProps {
   offers: Place[];
+  selectedOffer: Place | null;
+  setSelectedOffer: (offer: Place | null) => void;
 }
 
 export function OfferList(props: OfferListProps) {
-  const [, setActiveOfferID] = React.useState<string | null>(null);
   return (
     <section className='cities__places places'>
       <h2 className='visually-hidden'>Places</h2>
@@ -41,8 +42,8 @@ export function OfferList(props: OfferListProps) {
         {props.offers.map((offer) => (
           <div
             key={offer.id}
-            onMouseEnter={() => setActiveOfferID(offer.id)}
-            onMouseLeave={() => setActiveOfferID(null)}
+            onMouseEnter={() => props.setSelectedOffer(offer)}
+            onMouseLeave={() => props.setSelectedOffer(null)}
           >
             <OfferCard {...offer} />
           </div>
