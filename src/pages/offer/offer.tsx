@@ -1,4 +1,6 @@
-export default function OfferNotLoggedPage(): JSX.Element {
+import { ReviewForm } from '@/components/offer/review-form';
+
+export default function Offer(): JSX.Element {
   return (
     <div className='page'>
       <header className='header'>
@@ -23,7 +25,15 @@ export default function OfferNotLoggedPage(): JSX.Element {
                     href='#'
                   >
                     <div className='header__avatar-wrapper user__avatar-wrapper'></div>
-                    <span className='header__login'>Sign in</span>
+                    <span className='header__user-name user__name'>
+                      Oliver.conner@gmail.com
+                    </span>
+                    <span className='header__favorite-count'>3</span>
+                  </a>
+                </li>
+                <li className='header__nav-item'>
+                  <a className='header__nav-link' href='#'>
+                    <span className='header__signout'>Sign out</span>
                   </a>
                 </li>
               </ul>
@@ -197,6 +207,7 @@ export default function OfferNotLoggedPage(): JSX.Element {
                     </div>
                   </li>
                 </ul>
+                <ReviewForm />
               </section>
             </div>
           </div>

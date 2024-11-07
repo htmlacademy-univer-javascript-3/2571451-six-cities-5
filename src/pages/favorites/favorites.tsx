@@ -1,4 +1,11 @@
-export default function FavoritesPage() {
+import { FavoritesList } from '@/components/favorite/list';
+import { Place } from '@/types/place';
+
+export interface FavoritesProps {
+  offers: Place[];
+}
+
+export function Favorites(props: FavoritesProps) {
   return (
     <div className='page page--favorites-empty'>
       <header className='header'>
@@ -40,19 +47,15 @@ export default function FavoritesPage() {
         </div>
       </header>
 
-      <main className='page__main page__main--favorites page__main--favorites-empty'>
+      <main className='page__main page__main--favorites'>
         <div className='page__favorites-container container'>
-          <section className='favorites favorites--empty'>
-            <h1 className='visually-hidden'>Favorites (empty)</h1>
-            <div className='favorites__status-wrapper'>
-              <b className='favorites__status'>Nothing yet saved.</b>
-              <p className='favorites__status-description'>
-                Save properties to narrow down search or plan your future trips.
-              </p>
-            </div>
+          <section className='favorites'>
+            <h1 className='favorites__title'>Saved listing</h1>
+            <FavoritesList favorites={props.offers} />
           </section>
         </div>
       </main>
+
       <footer className='footer'>
         <a className='footer__logo-link' href='main.html'>
           <img
