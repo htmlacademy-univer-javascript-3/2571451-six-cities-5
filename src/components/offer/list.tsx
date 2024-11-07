@@ -1,4 +1,3 @@
-import React from 'react';
 import { OfferCard } from './card';
 import { Place } from '@/types/place';
 
