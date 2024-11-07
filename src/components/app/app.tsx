@@ -8,15 +8,15 @@ import { Favorites } from '@/pages/favorites/favorites';
 import Offer from '@/pages/offer/offer';
 import PrivateRoute from '@/components/private-route/private-route';
 import {
-  offers as mockOffers,
+  places as mockPlaces,
   favorites as mockFavorites,
-} from '@/mocks/offers';
+} from '@/mocks/places';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={AppRoute.Main} element={<Main offers={mockOffers} />} />
+        <Route path={AppRoute.Main} element={<Main offers={mockPlaces} />} />
         <Route path={AppRoute.Login} element={<Login />} />
         <Route path={AppRoute.Offer} element={<Offer />} />
         <Route
