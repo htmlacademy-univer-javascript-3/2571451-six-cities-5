@@ -1,11 +1,14 @@
+import Map from '@/components/map/map';
 import { OfferList } from '@/components/offer/list';
 import { Place } from '@/types/place';
+import React from 'react';
 
 export interface MainProps {
   offers: Place[];
 }
 
 export default function Main(props: MainProps) {
+  const [selectedPlace, setSelectedPlace] = React.useState<Place | null>(null);
   return (
     <div className='page page--gray page--main'>
       <header className='header'>
@@ -87,9 +90,19 @@ export default function Main(props: MainProps) {
         </div>
         <div className='cities'>
           <div className='cities__places-container container'>
-            <OfferList offers={props.offers} />
+            <OfferList
+              offers={props.offers}
+              selectedOffer={selectedPlace}
+              setSelectedOffer={setSelectedPlace}
+            />
             <div className='cities__right-section'>
-              <section className='cities__map map'></section>
+              <section className='cities__map map'>
+                <Map
+                  location={props.offers[0].city.location}
+                  places={props.offers}
+                  selectedPlace={selectedPlace}
+                />
+              </section>
             </div>
           </div>
         </div>
