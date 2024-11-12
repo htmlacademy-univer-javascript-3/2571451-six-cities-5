@@ -1,6 +1,6 @@
 import { Place } from '@/types/place';
 
-export const offers = [
+export const places = [
   {
     id: '77899525-2b0d-4627-be80-f33c79e8fba7',
     title: 'Loft Studio in the Central Area',
