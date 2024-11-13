@@ -1,12 +1,15 @@
 import { configureStore, createReducer } from '@reduxjs/toolkit';
-import { setCity } from './actions';
+import { setCity, setOfferSortType } from './actions';
 import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux';
-import { CITIES } from '@/config';
+import { CITIES, OfferSortType } from '@/const';
 
-const initialState = { city: CITIES[0] };
+const initialState = { city: CITIES[0], offerSortType: OfferSortType.Popular };
 const reducer = createReducer(initialState, (builder) => {
   builder.addCase(setCity, (state, action) => {
     state.city = action.payload;
+  });
+  builder.addCase(setOfferSortType, (state, action) => {
+    state.offerSortType = action.payload;
   });
 });
 

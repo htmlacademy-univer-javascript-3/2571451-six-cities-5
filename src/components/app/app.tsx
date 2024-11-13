@@ -1,7 +1,7 @@
 import Main from '@/pages/main/main';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import '@/config';
-import { AppRoute } from '@/config';
+import '@/const';
+import { AppRoute } from '@/const';
 import Login from '@/pages/login/login';
 import PageNotFound from '@/pages/404/404';
 import { Favorites } from '@/pages/favorites/favorites';

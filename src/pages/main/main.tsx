@@ -1,7 +1,7 @@
 import { CitySelector } from '@/components/city/city-selector';
 import Map from '@/components/map/map';
 import { OfferList } from '@/components/offer/list';
-import { CITIES } from '@/config';
+import { CITIES } from '@/const';
 import { useAppSelector } from '@/store/store';
 import { Place } from '@/types/place';
 import React from 'react';

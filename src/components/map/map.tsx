@@ -2,7 +2,7 @@ import { useRef, useEffect } from 'react';
 import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useMap } from '@/hooks/map';
-import { URL_MARKER, URL_MARKER_ACTIVE } from '@/config';
+import { URL_MARKER, URL_MARKER_ACTIVE } from '@/const';
 import { Location } from '@/types/location';
 import { Place } from '@/types/place';
 

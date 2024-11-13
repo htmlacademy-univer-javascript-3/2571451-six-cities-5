@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { AppRoute } from '@/config';
+import { AppRoute } from '@/const';
 
 type PrivateRouteProps = {
   auth: boolean;
