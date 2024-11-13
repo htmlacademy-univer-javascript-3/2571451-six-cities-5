@@ -2,10 +2,7 @@ import { useAppSelector } from '@/store/store';
 import { OfferCard } from './card';
 import { Place } from '@/types/place';
 import { OfferSortType } from '@/const';
-import clsx from 'clsx';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { setOfferSortType } from '@/store/actions';
+import { SortSelector } from './sort-selector';
 
 export interface OfferListProps {
   offers: Place[];
@@ -34,51 +31,18 @@ export function OfferList(props: OfferListProps) {
       }
     });
 
-  const [sortSelectorOpen, setSortSelectorOpen] = useState(false);
-  const dispatch = useDispatch();
-
   return (
     <section className='cities__places places'>
       <h2 className='visually-hidden'>Places</h2>
       <b className='places__found'>
         {offersInSelectedCity.length} places to stay in {props.selectedCity}
       </b>
-      <form className='places__sorting' action='#' method='get'>
-        <span className='places__sorting-caption'>Sort by</span>
-        <span
-          className='places__sorting-type'
-          tabIndex={0}
-          onClick={() => setSortSelectorOpen(!sortSelectorOpen)}
-        >
-          {offerSortType}
-          <svg className='places__sorting-arrow' width='7' height='4'>
-            <use xlinkHref='#icon-arrow-select'></use>
-          </svg>
-        </span>
-        <ul
-          className={clsx(
-            'places__options places__options--custom',
-            sortSelectorOpen && 'places__options--opened'
-          )}
-        >
-          {Object.entries(OfferSortType).map(([, sortType]) => (
-            <li
-              key={sortType}
-              className={clsx(
-                'places__option',
-                sortType === offerSortType && 'places__option--active'
-              )}
-              tabIndex={0}
-              onClick={() => {
-                setSortSelectorOpen(false);
-                dispatch(setOfferSortType(sortType));
-              }}
-            >
-              {sortType}
-            </li>
-          ))}
-        </ul>
-      </form>
+      <SortSelector
+        sortTypes={Object.entries(OfferSortType).map(
+          ([, sortType]) => sortType
+        )}
+        selectedSortType={offerSortType}
+      />
       <div className='cities__places-list places__list tabs__content'>
         {offersInSelectedCity.map((offer) => (
           <div
