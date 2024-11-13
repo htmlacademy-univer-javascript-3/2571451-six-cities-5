@@ -11,24 +11,28 @@ import {
   places as mockPlaces,
   favorites as mockFavorites,
 } from '@/mocks/places';
+import { Provider } from 'react-redux';
+import { store } from '@/store/store';
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path={AppRoute.Main} element={<Main offers={mockPlaces} />} />
-        <Route path={AppRoute.Login} element={<Login />} />
-        <Route path={AppRoute.Offer} element={<Offer />} />
-        <Route
-          path={AppRoute.Favorites}
-          element={
-            <PrivateRoute auth>
-              <Favorites offers={mockFavorites} />
-            </PrivateRoute>
-          }
-        />
-        <Route path='*' element={<PageNotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path={AppRoute.Main} element={<Main offers={mockPlaces} />} />
+          <Route path={AppRoute.Login} element={<Login />} />
+          <Route path={AppRoute.Offer} element={<Offer />} />
+          <Route
+            path={AppRoute.Favorites}
+            element={
+              <PrivateRoute auth>
+                <Favorites offers={mockFavorites} />
+              </PrivateRoute>
+            }
+          />
+          <Route path='*' element={<PageNotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 }
