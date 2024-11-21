@@ -1,5 +1,8 @@
+import { CitySelector } from '@/components/city/city-selector';
 import Map from '@/components/map/map';
 import { OfferList } from '@/components/offer/list';
+import { CITIES } from '@/config';
+import { useAppSelector } from '@/store/store';
 import { Place } from '@/types/place';
 import React from 'react';
 
@@ -9,6 +12,8 @@ export interface MainProps {
 
 export default function Main(props: MainProps) {
   const [selectedPlace, setSelectedPlace] = React.useState<Place | null>(null);
+  const selectedCity = useAppSelector((state) => state.city);
+
   return (
     <div className='page page--gray page--main'>
       <header className='header'>
@@ -52,48 +57,14 @@ export default function Main(props: MainProps) {
 
       <main className='page__main page__main--index'>
         <h1 className='visually-hidden'>Cities</h1>
-        <div className='tabs'>
-          <section className='locations container'>
-            <ul className='locations__list tabs__list'>
-              <li className='locations__item'>
-                <a className='locations__item-link tabs__item' href='#'>
-                  <span>Paris</span>
-                </a>
-              </li>
-              <li className='locations__item'>
-                <a className='locations__item-link tabs__item' href='#'>
-                  <span>Cologne</span>
-                </a>
-              </li>
-              <li className='locations__item'>
-                <a className='locations__item-link tabs__item' href='#'>
-                  <span>Brussels</span>
-                </a>
-              </li>
-              <li className='locations__item'>
-                <a className='locations__item-link tabs__item tabs__item--active'>
-                  <span>Amsterdam</span>
-                </a>
-              </li>
-              <li className='locations__item'>
-                <a className='locations__item-link tabs__item' href='#'>
-                  <span>Hamburg</span>
-                </a>
-              </li>
-              <li className='locations__item'>
-                <a className='locations__item-link tabs__item' href='#'>
-                  <span>Dusseldorf</span>
-                </a>
-              </li>
-            </ul>
-          </section>
-        </div>
+        <CitySelector selectedCity={selectedCity} cities={CITIES} />
         <div className='cities'>
           <div className='cities__places-container container'>
             <OfferList
               offers={props.offers}
               selectedOffer={selectedPlace}
               setSelectedOffer={setSelectedPlace}
+              selectedCity={selectedCity}
             />
             <div className='cities__right-section'>
               <section className='cities__map map'>

@@ -5,14 +5,19 @@ export interface OfferListProps {
   offers: Place[];
   selectedOffer: Place | null;
   setSelectedOffer: (offer: Place | null) => void;
+  selectedCity: string;
 }
 
 export function OfferList(props: OfferListProps) {
+  const offersInSelectedCity = props.offers.filter(
+    (offer) => offer.city.name === props.selectedCity
+  );
+
   return (
     <section className='cities__places places'>
       <h2 className='visually-hidden'>Places</h2>
       <b className='places__found'>
-        {props.offers.length} places to stay in Amsterdam
+        {offersInSelectedCity.length} places to stay in {props.selectedCity}
       </b>
       <form className='places__sorting' action='#' method='get'>
         <span className='places__sorting-caption'>Sort by</span>
@@ -38,7 +43,7 @@ export function OfferList(props: OfferListProps) {
         </ul>
       </form>
       <div className='cities__places-list places__list tabs__content'>
-        {props.offers.map((offer) => (
+        {offersInSelectedCity.map((offer) => (
           <div
             key={offer.id}
             onMouseEnter={() => props.setSelectedOffer(offer)}
