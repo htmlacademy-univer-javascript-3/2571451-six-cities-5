@@ -1,11 +1,7 @@
 import { FavoritesList } from '@/components/favorite/list';
-import { Place } from '@/types/place';
+import { favorites } from '@/mocks/places';
 
-export interface FavoritesProps {
-  offers: Place[];
-}
-
-export function Favorites(props: FavoritesProps) {
+export function Favorites() {
   return (
     <div className='page page--favorites-empty'>
       <header className='header'>
@@ -51,7 +47,7 @@ export function Favorites(props: FavoritesProps) {
         <div className='page__favorites-container container'>
           <section className='favorites'>
             <h1 className='favorites__title'>Saved listing</h1>
-            <FavoritesList favorites={props.offers} />
+            <FavoritesList favorites={favorites} />
           </section>
         </div>
       </main>

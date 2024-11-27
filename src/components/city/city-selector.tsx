@@ -1,4 +1,5 @@
 import { setCity } from '@/store/actions';
+import { City } from '@/types/city';
 import { clsx } from 'clsx';
 import { useDispatch } from 'react-redux';
 
@@ -6,8 +7,8 @@ export function CitySelector({
   cities,
   selectedCity,
 }: {
-  cities: string[];
-  selectedCity: string;
+  cities: City[];
+  selectedCity: City;
 }) {
   const dispatch = useDispatch();
   return (
@@ -15,7 +16,7 @@ export function CitySelector({
       <section className='locations container'>
         <ul className='locations__list tabs__list'>
           {cities.map((city) => (
-            <li key={city} className='locations__item'>
+            <li key={city.name} className='locations__item'>
               <a
                 className={clsx(
                   'locations__item-link tabs__item',
@@ -23,7 +24,7 @@ export function CitySelector({
                 )}
                 onClick={() => dispatch(setCity(city))}
               >
-                <span>{city}</span>
+                <span>{city.name}</span>
               </a>
             </li>
           ))}
