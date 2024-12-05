@@ -1,7 +1,6 @@
 import { CitySelector } from '@/components/city/city-selector';
 import Map from '@/components/map/map';
 import { OfferList } from '@/components/offer/list';
-import TetrisLoader from '@/components/ui/spinner/spinner';
 import { CITIES } from '@/const';
 import { useAppSelector } from '@/store/store';
 import { Place } from '@/types/place';
