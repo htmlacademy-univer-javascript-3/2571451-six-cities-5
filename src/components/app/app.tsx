@@ -23,7 +23,7 @@ export default function App() {
           <Route
             path={AppRoute.Favorites}
             element={
-              <PrivateRoute auth>
+              <PrivateRoute redirect={AppRoute.Favorites}>
                 <Favorites />
               </PrivateRoute>
             }

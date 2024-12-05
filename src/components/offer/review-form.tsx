@@ -1,3 +1,6 @@
+import { postComment } from '@/store/api-actions';
+import { useAppDispatch } from '@/store/store';
+import { NewComment } from '@/types/comment';
 import React, { ChangeEvent } from 'react';
 
 export function ReviewForm() {
@@ -20,8 +23,19 @@ export function ReviewForm() {
     });
   };
 
+  const dispatch = useAppDispatch();
+
+  const submit = () => {
+    dispatch(
+      postComment({
+        comment: reviewData.review,
+        rating: parseInt(reviewData.rating, 10),
+      } as NewComment)
+    );
+  };
+
   return (
-    <form className='reviews__form form' action='#' method='post'>
+    <form className='reviews__form form' onSubmit={submit}>
       <label className='reviews__label form__label' htmlFor='review'>
         Your review
       </label>
