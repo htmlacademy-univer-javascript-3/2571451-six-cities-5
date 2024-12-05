@@ -112,9 +112,8 @@ export const fetchCurrentOffer = createAsyncThunk<
   }
 >('currentOffer/fetch', async (offerId, { dispatch, extra: api }) => {
   try {
-    dispatch(setCurrentOfferIsLoading(false));
-    const { data } = await api.get<Offer>(`${ApiRoute.Offers}/${offerId}`);
     dispatch(setCurrentOfferIsLoading(true));
+    const { data } = await api.get<Offer>(`${ApiRoute.Offers}/${offerId}`);
     dispatch(setCurrentOffer(data));
     dispatch(setCurrentOffer404(false));
 
@@ -122,6 +121,9 @@ export const fetchCurrentOffer = createAsyncThunk<
     dispatch(fetchComments(offerId));
   } catch (error) {
     dispatch(setCurrentOffer404(true));
+    dispatch(setCurrentOffer(null));
+  } finally {
+    dispatch(setCurrentOfferIsLoading(false));
   }
 });
 
@@ -172,15 +174,18 @@ export const postComment = createAsyncThunk<
     state: State;
     extra: AxiosInstance;
   }
->('comment/post', async ({ comment, rating }, { dispatch, extra: api }) => {
-  dispatch(setCommentsIsLoading(true));
-  try {
-    const res = await api.post<Comment>(ApiRoute.Comments, {
-      comment,
-      rating,
-    });
-    dispatch(addComment(res.data));
-  } finally {
-    dispatch(setCommentsIsLoading(false));
+>(
+  'comment/post',
+  async ({ offerID, comment, rating }, { dispatch, extra: api }) => {
+    dispatch(setCommentsIsLoading(true));
+    try {
+      const res = await api.post<Comment>(`${ApiRoute.Comments}/${offerID}`, {
+        comment,
+        rating,
+      });
+      dispatch(addComment(res.data));
+    } finally {
+      dispatch(setCommentsIsLoading(false));
+    }
   }
-});
+);

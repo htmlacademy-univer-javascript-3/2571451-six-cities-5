@@ -6,7 +6,7 @@ import { AppRoute, CITIES } from '@/const';
 import { setLoginRedirect } from '@/store/actions';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { Place } from '@/types/place';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export default function Main() {
   const [selectedPlace, setSelectedPlace] = React.useState<Place | null>(null);
@@ -15,7 +15,9 @@ export default function Main() {
 
   const dispatch = useAppDispatch();
 
-  dispatch(setLoginRedirect(AppRoute.Main));
+  useEffect(() => {
+    dispatch(setLoginRedirect(AppRoute.Main));
+  });
 
   return (
     <div className='page page--gray page--main'>

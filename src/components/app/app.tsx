@@ -9,10 +9,11 @@ import Offer from '@/pages/offer/offer';
 import PrivateRoute from '@/components/private-route/private-route';
 import { Provider } from 'react-redux';
 import { store } from '@/store/store';
-import { fetchPlaces } from '@/store/api-actions';
+import { checkAuth, fetchPlaces } from '@/store/api-actions';
 
 export default function App() {
   store.dispatch(fetchPlaces());
+  store.dispatch(checkAuth());
   return (
     <Provider store={store}>
       <BrowserRouter>
