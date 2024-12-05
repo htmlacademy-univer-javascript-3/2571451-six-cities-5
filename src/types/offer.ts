@@ -3,7 +3,6 @@ import { User } from './user';
 
 export interface Offer extends Place {
   isFavorite: boolean;
-  isPremium: boolean;
   rating: number;
   description: string;
   bedrooms: number;

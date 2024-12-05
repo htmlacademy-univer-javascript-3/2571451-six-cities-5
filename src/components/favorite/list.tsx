@@ -32,7 +32,7 @@ export function FavoritesList(props: FavoritesListProps) {
           </div>
           <div className='favorites__places'>
             {favoritesInCity.get(cityName)!.map((favorite) => (
-              <FavoriteCard key={favorite.id} {...favorite} />
+              <FavoriteCard key={favorite.id} place={favorite} />
             ))}
           </div>
         </li>

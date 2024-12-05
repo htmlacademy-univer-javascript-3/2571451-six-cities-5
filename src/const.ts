@@ -14,12 +14,6 @@ export enum ApiRoute {
   Comments = '/comments',
 }
 
-export enum AuthorizationStatus {
-  Authorized,
-  Unauthorized,
-  Unknown,
-}
-
 export const URL_MARKER =
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/pin.svg';
 export const URL_MARKER_ACTIVE =

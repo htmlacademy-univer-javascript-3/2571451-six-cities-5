@@ -3,10 +3,9 @@ import { OfferCard } from './card';
 import { Place } from '@/types/place';
 import { OfferSortType } from '@/const';
 import { SortSelector } from './sort-selector';
-import TetrisLoader from '../ui/spinner/spinner';
+import Spinner from '../ui/spinner/spinner';
 
 export interface OfferListProps {
-  selectedOffer: Place | null;
   setSelectedOffer: (offer: Place | null) => void;
   selectedCity: string;
 }
@@ -46,7 +45,7 @@ export function OfferList(props: OfferListProps) {
         selectedSortType={offerSortType}
       />
       <div className='cities__places-list places__list tabs__content'>
-        {isLoading && <TetrisLoader />}
+        {isLoading && <Spinner />}
         {!isLoading &&
           offersInSelectedCity.map((offer) => (
             <div
@@ -54,7 +53,7 @@ export function OfferList(props: OfferListProps) {
               onMouseEnter={() => props.setSelectedOffer(offer)}
               onMouseLeave={() => props.setSelectedOffer(null)}
             >
-              <OfferCard {...offer} />
+              <OfferCard place={offer} />
             </div>
           ))}
       </div>

@@ -7,3 +7,9 @@ export interface Comment {
   user: User;
   rating: number;
 }
+
+export interface NewComment {
+  offerID: string;
+  comment: string;
+  rating: 4;
+}

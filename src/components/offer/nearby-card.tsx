@@ -15,7 +15,7 @@ export function NearbyCard({ place }: { place: Place }) {
           />
         </a>
       </div>
-      <Card {...place} />
+      <Card place={place} />
     </article>
   );
 }

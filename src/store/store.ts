@@ -1,4 +1,4 @@
-import { AuthorizationStatus, CITIES, OfferSortType } from '@/const';
+import { CITIES, OfferSortType } from '@/const';
 import {
   setCity,
   setOfferSortType,
@@ -14,7 +14,11 @@ import {
   setComments,
   setCommentsIsLoading,
   addComment,
-  requireAuthorization,
+  setAuthorizedUser,
+  setLoginRedirect,
+  setLoginError,
+  addFavorite,
+  removeFavorite,
 } from './actions';
 import { Offer } from '@/types/offer';
 import { Place } from '@/types/place';
@@ -23,6 +27,7 @@ import { configureStore, createReducer } from '@reduxjs/toolkit';
 import { create } from '@/api/api';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { City } from '@/types/city';
+import { AuthorizedUser } from '@/types/user';
 
 export type State = {
   city: City;
@@ -38,7 +43,9 @@ export type State = {
   nearbyIsLoading: boolean;
   comments: Comment[];
   commentsIsLoading: boolean;
-  authorizationStatus: AuthorizationStatus;
+  user?: AuthorizedUser;
+  loginError: boolean;
+  loginRedirectsTo?: string;
 };
 
 const initialState: State = {
@@ -55,7 +62,7 @@ const initialState: State = {
   nearbyIsLoading: false,
   comments: [],
   commentsIsLoading: false,
-  authorizationStatus: AuthorizationStatus.Unknown,
+  loginError: false,
 };
 
 const reducer = createReducer(initialState, (builder) => {
@@ -100,10 +107,36 @@ const reducer = createReducer(initialState, (builder) => {
       state.comments = action.payload;
     })
     .addCase(addComment, (state, action) => {
-      state.comments.push(action.payload);
+      state.comments = [...state.comments, action.payload];
     })
-    .addCase(requireAuthorization, (state, action) => {
-      state.authorizationStatus = action.payload;
+    .addCase(setAuthorizedUser, (state, action) => {
+      const user = action.payload;
+      state.user = user;
+      state.loginError = false;
+    })
+    .addCase(setLoginRedirect, (state, action) => {
+      state.loginRedirectsTo = action.payload;
+    })
+    .addCase(setLoginError, (state, action) => {
+      state.loginError = action.payload;
+    })
+    .addCase(addFavorite, (state, action) => {
+      state.favorite = [...state.favorite, action.payload];
+      state.places = state.places.map((p) => {
+        if (p.id === action.payload.id) {
+          p.isFavorite = true;
+        }
+        return p;
+      });
+    })
+    .addCase(removeFavorite, (state, action) => {
+      state.favorite = state.favorite.filter((f) => f.id !== action.payload.id);
+      state.places = state.places.map((p) => {
+        if (p.id === action.payload.id) {
+          p.isFavorite = false;
+        }
+        return p;
+      });
     });
 });
 

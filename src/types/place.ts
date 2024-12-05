@@ -8,7 +8,7 @@ export interface Place {
   price: number;
   city: City;
   location: Location;
-  isFavorite: boolean;
+  isFavorite?: boolean;
   isPremium: boolean;
   rating: number;
   previewImage: string;
