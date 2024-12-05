@@ -6,7 +6,6 @@ import { SortSelector } from './sort-selector';
 import Spinner from '../ui/spinner/spinner';
 
 export interface OfferListProps {
-  selectedOffer: Place | null;
   setSelectedOffer: (offer: Place | null) => void;
   selectedCity: string;
 }
@@ -54,7 +53,7 @@ export function OfferList(props: OfferListProps) {
               onMouseEnter={() => props.setSelectedOffer(offer)}
               onMouseLeave={() => props.setSelectedOffer(null)}
             >
-              <OfferCard {...offer} />
+              <OfferCard place={offer} />
             </div>
           ))}
       </div>

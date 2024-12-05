@@ -28,7 +28,6 @@ export default function Main() {
         <div className='cities'>
           <div className='cities__places-container container'>
             <OfferList
-              selectedOffer={selectedPlace}
               setSelectedOffer={setSelectedPlace}
               selectedCity={selectedCity.name}
             />

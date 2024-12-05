@@ -24,6 +24,8 @@ export const setFavorite = createAction<Place[]>('favorite/set');
 export const setFavoriteIsLoading = createAction<boolean>(
   'favorite/setLoadingStatus'
 );
+export const addFavorite = createAction<Place>('favorite/add');
+export const removeFavorite = createAction<Place>('favorite/remove');
 
 export const setNearby = createAction<Place[]>('nearby/set');
 export const setNearbyIsLoading = createAction<boolean>(

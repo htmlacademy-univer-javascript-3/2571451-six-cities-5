@@ -1,11 +1,20 @@
 import { FavoritesList } from '@/components/favorite/list';
 import { Header } from '@/components/header/header';
 import Spinner from '@/components/ui/spinner/spinner';
-import { useAppSelector } from '@/store/store';
+import { AppRoute } from '@/const';
+import { fetchFavoriteOffers } from '@/store/api-actions';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export function Favorites() {
   const favorite = useAppSelector((state) => state.favorite);
   const isLoading = useAppSelector((state) => state.favoriteIsLoading);
+
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchFavoriteOffers());
+  }, [dispatch, favorite?.length]);
 
   return (
     <div className='page page--favorites-empty'>
@@ -21,7 +30,7 @@ export function Favorites() {
       </main>
 
       <footer className='footer'>
-        <a className='footer__logo-link' href='main.html'>
+        <Link className='footer__logo-link' to={AppRoute.Main}>
           <img
             className='footer__logo'
             src='img/logo.svg'
@@ -29,7 +38,7 @@ export function Favorites() {
             width='64'
             height='33'
           />
-        </a>
+        </Link>
       </footer>
     </div>
   );
