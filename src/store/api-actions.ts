@@ -2,10 +2,9 @@ import { AxiosInstance } from 'axios';
 import { AppDispatch, State } from './store';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Offer } from '@/types/offer';
-import { ApiRoute, AuthorizationStatus } from '@/const';
+import { ApiRoute } from '@/const';
 import {
   addComment,
-  requireAuthorization,
   setPlaces,
   setPlacesIsLoading,
   setComments,
@@ -17,8 +16,12 @@ import {
   setFavoriteIsLoading,
   setNearby,
   setNearbyIsLoading,
+  setAuthorizedUser,
+  setLoginError,
 } from './actions.ts';
-import { Comment } from '@/types/comment.ts';
+import { Comment, NewComment } from '@/types/comment.ts';
+import { AuthData, AuthorizedUser } from '@/types/user.ts';
+import { writeToken } from '@/storage/token.ts';
 
 export const fetchPlaces = createAsyncThunk<
   void,
@@ -92,10 +95,10 @@ export const checkAuth = createAsyncThunk<
   }
 >('user/checkAuth', async (_arg, { dispatch, extra: api }) => {
   try {
-    await api.get(ApiRoute.Login);
-    dispatch(requireAuthorization(AuthorizationStatus.Authorized));
+    const res = await api.get<AuthorizedUser>(ApiRoute.Login);
+    dispatch(setAuthorizedUser(res.data));
   } catch {
-    dispatch(requireAuthorization(AuthorizationStatus.Unauthorized));
+    dispatch(setAuthorizedUser(undefined));
   }
 });
 
@@ -122,24 +125,62 @@ export const fetchCurrentOffer = createAsyncThunk<
   }
 });
 
-export const postComment = createAsyncThunk<
+export const login = createAsyncThunk<
   void,
-  { offerId: string; comment: string; rating: number },
+  AuthData,
   {
     dispatch: AppDispatch;
     state: State;
     extra: AxiosInstance;
   }
->(
-  'comments/post',
-  async ({ offerId, comment, rating }, { dispatch, extra: api }) => {
-    const { data } = await api.post<Comment>(
-      `${ApiRoute.Comments}/${offerId}`,
-      {
-        comment,
-        rating,
-      }
-    );
-    dispatch(addComment(data));
+>('user/login', async ({ email, password }, { dispatch, extra: api }) => {
+  try {
+    const response = await api.post<AuthorizedUser>(ApiRoute.Login, {
+      email,
+      password,
+    });
+    writeToken(response.data.token);
+    dispatch(setAuthorizedUser(response.data));
+    dispatch(fetchPlaces());
+    dispatch(fetchFavoriteOffers());
+  } catch {
+    dispatch(setLoginError(true));
   }
-);
+});
+
+export const logout = createAsyncThunk<
+  void,
+  undefined,
+  {
+    dispatch: AppDispatch;
+    state: State;
+    extra: AxiosInstance;
+  }
+>('user/logout', async (_arg, { dispatch, extra: api }) => {
+  await api.delete(ApiRoute.Logout);
+  writeToken(undefined);
+  dispatch(setAuthorizedUser(undefined));
+  dispatch(fetchPlaces());
+  dispatch(setFavorite([]));
+});
+
+export const postComment = createAsyncThunk<
+  void,
+  NewComment,
+  {
+    dispatch: AppDispatch;
+    state: State;
+    extra: AxiosInstance;
+  }
+>('comment/post', async ({ comment, rating }, { dispatch, extra: api }) => {
+  dispatch(setCommentsIsLoading(true));
+  try {
+    const res = await api.post<Comment>(ApiRoute.Comments, {
+      comment,
+      rating,
+    });
+    dispatch(addComment(res.data));
+  } finally {
+    dispatch(setCommentsIsLoading(false));
+  }
+});

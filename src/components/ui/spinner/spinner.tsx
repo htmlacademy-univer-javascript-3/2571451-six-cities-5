@@ -1,3 +1,3 @@
-export default function TetrisLoader() {
+export default function Spinner() {
   return <div>spinnin</div>;
 }

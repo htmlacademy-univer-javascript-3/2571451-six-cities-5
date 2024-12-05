@@ -1,9 +1,10 @@
-import { AuthorizationStatus, OfferSortType } from '@/const';
+import { OfferSortType } from '@/const';
 import { Offer } from '@/types/offer';
 import { createAction } from '@reduxjs/toolkit';
 import { Place } from '@/types/place';
 import { Comment } from '@/types/comment';
 import { City } from '@/types/city';
+import { AuthorizedUser } from '@/types/user';
 
 export const setCity = createAction<City>('city/set');
 export const setOfferSortType = createAction<OfferSortType>('setOfferSort');
@@ -35,5 +36,12 @@ export const setCommentsIsLoading = createAction<boolean>(
 );
 export const addComment = createAction<Comment>('comments/add');
 
-export const requireAuthorization =
-  createAction<AuthorizationStatus>('auth/require');
+export const setAuthorizedUser = createAction<AuthorizedUser | undefined>(
+  'auth/setUser'
+);
+
+export const setLoginRedirect = createAction<string | undefined>(
+  'login/setRedirect'
+);
+
+export const setLoginError = createAction<boolean>('login/setError');

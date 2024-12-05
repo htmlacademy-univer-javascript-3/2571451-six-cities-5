@@ -3,7 +3,7 @@ import { OfferCard } from './card';
 import { Place } from '@/types/place';
 import { OfferSortType } from '@/const';
 import { SortSelector } from './sort-selector';
-import TetrisLoader from '../ui/spinner/spinner';
+import Spinner from '../ui/spinner/spinner';
 
 export interface OfferListProps {
   selectedOffer: Place | null;
@@ -46,7 +46,7 @@ export function OfferList(props: OfferListProps) {
         selectedSortType={offerSortType}
       />
       <div className='cities__places-list places__list tabs__content'>
-        {isLoading && <TetrisLoader />}
+        {isLoading && <Spinner />}
         {!isLoading &&
           offersInSelectedCity.map((offer) => (
             <div

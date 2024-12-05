@@ -7,3 +7,8 @@ export interface Comment {
   user: User;
   rating: number;
 }
+
+export interface NewComment {
+  comment: string;
+  rating: 4;
+}
