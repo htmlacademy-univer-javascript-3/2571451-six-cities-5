@@ -1,18 +1,15 @@
 import { CitySelector } from '@/components/city/city-selector';
 import Map from '@/components/map/map';
 import { OfferList } from '@/components/offer/list';
-import { CITIES } from '@/config';
+import { CITIES } from '@/const';
 import { useAppSelector } from '@/store/store';
 import { Place } from '@/types/place';
 import React from 'react';
 
-export interface MainProps {
-  offers: Place[];
-}
-
-export default function Main(props: MainProps) {
+export default function Main() {
   const [selectedPlace, setSelectedPlace] = React.useState<Place | null>(null);
   const selectedCity = useAppSelector((state) => state.city);
+  const places = useAppSelector((state) => state.places);
 
   return (
     <div className='page page--gray page--main'>
@@ -61,16 +58,15 @@ export default function Main(props: MainProps) {
         <div className='cities'>
           <div className='cities__places-container container'>
             <OfferList
-              offers={props.offers}
               selectedOffer={selectedPlace}
               setSelectedOffer={setSelectedPlace}
-              selectedCity={selectedCity}
+              selectedCity={selectedCity.name}
             />
             <div className='cities__right-section'>
               <section className='cities__map map'>
                 <Map
-                  location={props.offers[0].city.location}
-                  places={props.offers}
+                  location={selectedCity.location}
+                  places={places}
                   selectedPlace={selectedPlace}
                 />
               </section>
