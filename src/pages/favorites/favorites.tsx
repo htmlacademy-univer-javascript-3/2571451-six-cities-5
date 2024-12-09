@@ -7,14 +7,16 @@ import { useAppDispatch, useAppSelector } from '@/store/store';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-export function Favorites() {
-  const favorite = useAppSelector((state) => state.favorite);
+function ListLoader() {
   const isLoading = useAppSelector((state) => state.favoriteIsLoading);
+  return isLoading ? <Spinner /> : <FavoritesList />;
+}
 
+export function Favorites() {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(fetchFavoriteOffers());
-  }, [dispatch, favorite?.length]);
+  });
 
   return (
     <div className='page page--favorites-empty'>
@@ -24,7 +26,7 @@ export function Favorites() {
         <div className='page__favorites-container container'>
           <section className='favorites'>
             <h1 className='favorites__title'>Saved listing</h1>
-            {isLoading ? <Spinner /> : <FavoritesList favorites={favorite} />}
+            <ListLoader />
           </section>
         </div>
       </main>

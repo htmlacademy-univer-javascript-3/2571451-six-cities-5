@@ -1,10 +1,10 @@
-import { addFavoriteOffer, removeFavoriteOffer } from '@/store/api-actions';
-import { useAppDispatch } from '@/store/store';
+import { useAppSelector } from '@/store/store';
 import { Place } from '@/types/place';
-import clsx from 'clsx';
+import { Link } from 'react-router-dom';
+import { FavoriteButton } from './favorite-button';
 
 export function Card({ place }: { place: Place }) {
-  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user);
   return (
     <div className='place-card__info'>
       <div className='place-card__price-wrapper'>
@@ -12,28 +12,12 @@ export function Card({ place }: { place: Place }) {
           <b className='place-card__price-value'>&euro;{place.price}</b>
           <span className='place-card__price-text'>&#47;&nbsp;night</span>
         </div>
-        <button
-          className={clsx(
-            'place-card__bookmark-button',
-            'button',
-            place.isFavorite && 'place-card__bookmark-button--active'
-          )}
-          type='button'
-          onClick={() => {
-            if (place.isFavorite) {
-              dispatch(removeFavoriteOffer(place));
-            } else {
-              dispatch(addFavoriteOffer(place));
-            }
-          }}
-        >
-          <svg className='place-card__bookmark-icon' width='18' height='19'>
-            <use xlinkHref='#icon-bookmark'></use>
-          </svg>
-          {place.isFavorite && (
-            <span className='visually-hidden'>In bookmarks</span>
-          )}
-        </button>
+        {user && (
+          <FavoriteButton
+            place={place}
+            className='place-card__bookmark-button'
+          />
+        )}
       </div>
       <div className='place-card__rating rating'>
         <div className='place-card__stars rating__stars'>
@@ -42,7 +26,7 @@ export function Card({ place }: { place: Place }) {
         </div>
       </div>
       <h2 className='place-card__name'>
-        <a href={`/offer/${place.id}`}>{place.title}</a>
+        <Link to={`/offer/${place.id}`}>{place.title}</Link>
       </h2>
       <p className='place-card__type'>{place.type}</p>
     </div>

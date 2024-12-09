@@ -10,6 +10,45 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { fetchCurrentOffer } from '@/store/api-actions';
 import Spinner from '@/components/ui/spinner/spinner';
 import { useEffect } from 'react';
+import { FavoriteButton } from '@/components/place/favorite-button';
+
+function NearbyOffers() {
+  const nearby = useAppSelector((state) => state.nearby);
+  const nearbyLoading = useAppSelector((state) => state.nearbyIsLoading);
+
+  if (nearbyLoading) {
+    return <Spinner />;
+  }
+  return <Nearby places={nearby} />;
+}
+
+function NearbyMap() {
+  const offer = useAppSelector((state) => state.currentOffer);
+  const nearby = useAppSelector((state) => state.nearby);
+  const offerLoading = useAppSelector((state) => state.currentOfferIsLoading);
+  const nearbyLoading = useAppSelector((state) => state.nearbyIsLoading);
+
+  if (nearbyLoading || offerLoading || offer === null) {
+    return <Spinner />;
+  }
+
+  return <Map location={offer.location} places={nearby} hoverPlace={offer} />;
+}
+
+function ReviewsLoader() {
+  const reviews = useAppSelector((state) => state.comments);
+  const reviewsLoading = useAppSelector((state) => state.commentsIsLoading);
+
+  return (
+    <>
+      <h2 className='reviews__title'>
+        Reviews &middot;{' '}
+        <span className='reviews__amount'>{reviews.length}</span>
+      </h2>
+      {reviewsLoading ? <Spinner /> : <Reviews comments={reviews} />}
+    </>
+  );
+}
 
 export default function Offer(): JSX.Element {
   const offer = useAppSelector((state) => state.currentOffer);
@@ -18,18 +57,13 @@ export default function Offer(): JSX.Element {
   const is404 = useAppSelector((state) => state.currentOffer404);
 
   const descriptions = offer?.description.split('\n');
-  const reviews = useAppSelector((state) => state.comments);
-  const reviewsLoading = useAppSelector((state) => state.commentsIsLoading);
-
-  const nearby = useAppSelector((state) => state.nearby);
-  const nearbyLoading = useAppSelector((state) => state.nearbyIsLoading);
 
   const user = useAppSelector((state) => state.user);
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
-  if (!id) {
+  if (!id || is404) {
     navigate(AppRoute.NotFound);
   }
 
@@ -68,19 +102,12 @@ export default function Offer(): JSX.Element {
                   )}
                   <div className='offer__name-wrapper'>
                     <h1 className='offer__name'>{offer.title}</h1>
-                    <button
-                      className='offer__bookmark-button button'
-                      type='button'
-                    >
-                      <svg
-                        className='offer__bookmark-icon'
-                        width='31'
-                        height='33'
-                      >
-                        <use xlinkHref='#icon-bookmark'></use>
-                      </svg>
-                      <span className='visually-hidden'>To bookmarks</span>
-                    </button>
+                    {user && (
+                      <FavoriteButton
+                        place={offer}
+                        className='offer__bookmark-button'
+                      />
+                    )}
                   </div>
                   <div className='offer__rating rating'>
                     <div className='offer__stars rating__stars'>
@@ -150,32 +177,17 @@ export default function Offer(): JSX.Element {
                       </div>
                     )}
                     <section className='offer__reviews reviews'>
-                      <h2 className='reviews__title'>
-                        Reviews &middot;{' '}
-                        <span className='reviews__amount'>
-                          {reviews.length}
-                        </span>
-                      </h2>
-                      {reviewsLoading ? (
-                        <Spinner />
-                      ) : (
-                        <Reviews comments={reviews} />
-                      )}
-
+                      <ReviewsLoader />
                       {user && <ReviewForm offerID={id!} />}
                     </section>
                   </div>
                 </div>
               </div>
               <section className='offer__map map'>
-                <Map
-                  location={offer.location}
-                  places={nearby}
-                  selectedPlace={offer}
-                />
+                <NearbyMap />
               </section>
             </section>
-            {nearbyLoading ? <Spinner /> : <Nearby places={nearby} />}
+            <NearbyOffers />
           </>
         ) : (
           <Spinner />

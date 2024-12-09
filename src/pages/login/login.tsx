@@ -59,7 +59,8 @@ export default function Login(): JSX.Element {
             <h1 className='login__title'>Sign in</h1>
             <form
               className='login__form form'
-              onSubmit={(event) => void handleSubmit(submit)(event)}
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onSubmit={handleSubmit(submit)}
             >
               {loginError && (
                 <div>
