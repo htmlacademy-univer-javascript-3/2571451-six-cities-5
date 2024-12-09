@@ -18,10 +18,13 @@ import {
   setNearbyIsLoading,
   setAuthorizedUser,
   setLoginError,
+  addFavorite,
+  removeFavorite,
 } from './actions.ts';
 import { Comment, NewComment } from '@/types/comment.ts';
 import { AuthData, AuthorizedUser } from '@/types/user.ts';
 import { writeToken } from '@/storage/token.ts';
+import { Place } from '@/types/place.ts';
 
 export const fetchPlaces = createAsyncThunk<
   void,
@@ -48,9 +51,52 @@ export const fetchFavoriteOffers = createAsyncThunk<
   }
 >('favorite/fetch', async (_arg, { dispatch, extra: api }) => {
   dispatch(setFavoriteIsLoading(true));
-  const { data } = await api.get<Offer[]>(ApiRoute.Favorite);
-  dispatch(setFavoriteIsLoading(false));
-  dispatch(setFavorite(data));
+  try {
+    const { data } = await api.get<Offer[]>(ApiRoute.Favorite);
+    dispatch(setFavorite(data));
+  } finally {
+    dispatch(setFavoriteIsLoading(false));
+  }
+});
+
+export const addFavoriteOffer = createAsyncThunk<
+  void,
+  Place,
+  {
+    dispatch: AppDispatch;
+    state: State;
+    extra: AxiosInstance;
+  }
+>('favorite/add', async (place, { dispatch, extra: api }) => {
+  dispatch(setFavoriteIsLoading(true));
+  try {
+    const { data } = await api.post<Offer>(
+      `${ApiRoute.Favorite}/${place.id}/1`
+    );
+    dispatch(addFavorite(data));
+  } finally {
+    dispatch(setFavoriteIsLoading(false));
+  }
+});
+
+export const removeFavoriteOffer = createAsyncThunk<
+  void,
+  Place,
+  {
+    dispatch: AppDispatch;
+    state: State;
+    extra: AxiosInstance;
+  }
+>('favorite/add', async (place, { dispatch, extra: api }) => {
+  dispatch(setFavoriteIsLoading(true));
+  try {
+    const { data } = await api.post<Offer>(
+      `${ApiRoute.Favorite}/${place.id}/0`
+    );
+    dispatch(removeFavorite(data));
+  } finally {
+    dispatch(setFavoriteIsLoading(false));
+  }
 });
 
 export const fetchNearby = createAsyncThunk<
@@ -112,9 +158,8 @@ export const fetchCurrentOffer = createAsyncThunk<
   }
 >('currentOffer/fetch', async (offerId, { dispatch, extra: api }) => {
   try {
-    dispatch(setCurrentOfferIsLoading(false));
-    const { data } = await api.get<Offer>(`${ApiRoute.Offers}/${offerId}`);
     dispatch(setCurrentOfferIsLoading(true));
+    const { data } = await api.get<Offer>(`${ApiRoute.Offers}/${offerId}`);
     dispatch(setCurrentOffer(data));
     dispatch(setCurrentOffer404(false));
 
@@ -122,6 +167,9 @@ export const fetchCurrentOffer = createAsyncThunk<
     dispatch(fetchComments(offerId));
   } catch (error) {
     dispatch(setCurrentOffer404(true));
+    dispatch(setCurrentOffer(null));
+  } finally {
+    dispatch(setCurrentOfferIsLoading(false));
   }
 });
 
@@ -172,15 +220,18 @@ export const postComment = createAsyncThunk<
     state: State;
     extra: AxiosInstance;
   }
->('comment/post', async ({ comment, rating }, { dispatch, extra: api }) => {
-  dispatch(setCommentsIsLoading(true));
-  try {
-    const res = await api.post<Comment>(ApiRoute.Comments, {
-      comment,
-      rating,
-    });
-    dispatch(addComment(res.data));
-  } finally {
-    dispatch(setCommentsIsLoading(false));
+>(
+  'comment/post',
+  async ({ offerID, comment, rating }, { dispatch, extra: api }) => {
+    dispatch(setCommentsIsLoading(true));
+    try {
+      const res = await api.post<Comment>(`${ApiRoute.Comments}/${offerID}`, {
+        comment,
+        rating,
+      });
+      dispatch(addComment(res.data));
+    } finally {
+      dispatch(setCommentsIsLoading(false));
+    }
   }
-});
+);

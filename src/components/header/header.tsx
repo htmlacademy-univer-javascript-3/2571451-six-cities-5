@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/store/store';
 import { Link } from 'react-router-dom';
 
 export function Header() {
+  const favorite = useAppSelector((state) => state.favorite);
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user);
   return (
@@ -45,7 +46,9 @@ export function Header() {
                       <span className='header__user-name user__name'>
                         {user.email}
                       </span>
-                      <span className='header__favorite-count'>3</span>
+                      <span className='header__favorite-count'>
+                        {favorite?.length ?? 0}
+                      </span>
                     </>
                   )}
                 </Link>

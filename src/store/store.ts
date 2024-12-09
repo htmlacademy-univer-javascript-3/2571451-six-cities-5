@@ -17,6 +17,8 @@ import {
   setAuthorizedUser,
   setLoginRedirect,
   setLoginError,
+  addFavorite,
+  removeFavorite,
 } from './actions';
 import { Offer } from '@/types/offer';
 import { Place } from '@/types/place';
@@ -105,7 +107,7 @@ const reducer = createReducer(initialState, (builder) => {
       state.comments = action.payload;
     })
     .addCase(addComment, (state, action) => {
-      state.comments.push(action.payload);
+      state.comments = [...state.comments, action.payload];
     })
     .addCase(setAuthorizedUser, (state, action) => {
       const user = action.payload;
@@ -117,6 +119,24 @@ const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(setLoginError, (state, action) => {
       state.loginError = action.payload;
+    })
+    .addCase(addFavorite, (state, action) => {
+      state.favorite = [...state.favorite, action.payload];
+      state.places = state.places.map((p) => {
+        if (p.id === action.payload.id) {
+          p.isFavorite = true;
+        }
+        return p;
+      });
+    })
+    .addCase(removeFavorite, (state, action) => {
+      state.favorite = state.favorite.filter((f) => f.id !== action.payload.id);
+      state.places = state.places.map((p) => {
+        if (p.id === action.payload.id) {
+          p.isFavorite = false;
+        }
+        return p;
+      });
     });
 });
 

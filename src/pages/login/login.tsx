@@ -25,8 +25,8 @@ export default function Login(): JSX.Element {
 
   const loginError = useAppSelector((state) => state.loginError);
 
-  if (user) {
-    return <Navigate to={redirectTo ?? AppRoute.Main}></Navigate>;
+  if (user && redirectTo) {
+    return <Navigate to={redirectTo}></Navigate>;
   }
 
   function submit(data: AuthData) {

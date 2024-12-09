@@ -9,6 +9,7 @@ export interface Comment {
 }
 
 export interface NewComment {
+  offerID: string;
   comment: string;
   rating: 4;
 }
