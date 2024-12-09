@@ -9,11 +9,11 @@ import { Place } from '@/types/place';
 function Map({
   location,
   places,
-  selectedPlace,
+  hoverPlace: selectedPlace,
 }: {
   location: Location;
   places: Place[];
-  selectedPlace: Place | null;
+  hoverPlace?: Place;
 }) {
   const mapRef = useRef(null);
   const map = useMap(mapRef, location);

@@ -1,23 +1,33 @@
 import { Place } from '@/types/place';
 import { FavoriteCard } from './card';
+import { useMemo } from 'react';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import { setCity } from '@/store/actions';
+import { AppRoute, CITIES } from '@/const';
+import { useNavigate } from 'react-router-dom';
 
-export type FavoritesListProps = {
-  favorites: Place[];
-};
+export function FavoritesList() {
+  const dispatch = useAppDispatch();
+  const favorites = useAppSelector((state) => state.favorite);
 
-export function FavoritesList(props: FavoritesListProps) {
-  const favoritesInCity = new Map<string, Place[]>();
-  const cities = [];
-  for (const favorite of props.favorites) {
-    const cityName = favorite.city.name;
-    if (!favoritesInCity.has(cityName)) {
-      favoritesInCity.set(cityName, []);
-      cities.push(cityName);
+  const { favoritesInCity, cities } = useMemo(() => {
+    const fav = new Map<string, Place[]>();
+    const cit = [];
+    for (const favorite of favorites) {
+      const cityName = favorite.city.name;
+      if (!fav.has(cityName)) {
+        fav.set(cityName, []);
+        cit.push(cityName);
+      }
+      fav.get(cityName)!.push(favorite);
     }
-    favoritesInCity.get(cityName)!.push(favorite);
-  }
 
-  cities.sort();
+    cit.sort();
+
+    return { favoritesInCity: fav, cities: cit };
+  }, [favorites]);
+
+  const navigate = useNavigate();
 
   return (
     <ul className='favorites__list'>
@@ -25,9 +35,16 @@ export function FavoritesList(props: FavoritesListProps) {
         <li key={cityName} className='favorites__locations-items'>
           <div className='favorites__locations locations locations--current'>
             <div className='locations__item'>
-              <a className='locations__item-link' href='#'>
+              <button
+                className='locations__item-link'
+                role='link'
+                onClick={() => {
+                  dispatch(setCity(CITIES.find((c) => c.name === cityName)!));
+                  navigate(AppRoute.Main);
+                }}
+              >
                 <span>{cityName}</span>
-              </a>
+              </button>
             </div>
           </div>
           <div className='favorites__places'>

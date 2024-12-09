@@ -29,6 +29,10 @@ export enum OfferSortType {
   TopRatedFirst = 'Top rated first',
 }
 
+export const SORT_TYPES = Object.entries(OfferSortType).map(
+  ([, sortType]) => sortType
+);
+
 export const CITIES = [
   {
     name: 'Paris',

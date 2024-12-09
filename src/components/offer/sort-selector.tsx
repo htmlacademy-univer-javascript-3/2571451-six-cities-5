@@ -1,17 +1,13 @@
-import { OfferSortType } from '@/const';
+import { SORT_TYPES } from '@/const';
 import { setOfferSortType } from '@/store/actions';
+import { useAppSelector } from '@/store/store';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-export function SortSelector({
-  sortTypes,
-  selectedSortType,
-}: {
-  sortTypes: OfferSortType[];
-  selectedSortType: OfferSortType;
-}) {
+export function SortSelector() {
   const [sortSelectorOpen, setSortSelectorOpen] = useState(false);
+  const selectedSortType = useAppSelector((state) => state.offerSortType);
   const dispatch = useDispatch();
 
   return (
@@ -33,7 +29,7 @@ export function SortSelector({
           sortSelectorOpen && 'places__options--opened'
         )}
       >
-        {sortTypes.map((sortType) => (
+        {SORT_TYPES.map((sortType) => (
           <li
             key={sortType}
             className={clsx(

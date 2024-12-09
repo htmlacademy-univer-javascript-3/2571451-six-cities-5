@@ -19,15 +19,21 @@ import {
   setLoginError,
   addFavorite,
   removeFavorite,
+  setHoverPlace,
 } from './actions';
 import { Offer } from '@/types/offer';
 import { Place } from '@/types/place';
 import { Comment } from '@/types/comment';
-import { configureStore, createReducer } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  createReducer,
+  createSelector,
+} from '@reduxjs/toolkit';
 import { create } from '@/api/api';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { City } from '@/types/city';
 import { AuthorizedUser } from '@/types/user';
+import { writeToken } from '@/storage/token';
 
 export type State = {
   city: City;
@@ -46,6 +52,7 @@ export type State = {
   user?: AuthorizedUser;
   loginError: boolean;
   loginRedirectsTo?: string;
+  hoverPlace?: Place;
 };
 
 const initialState: State = {
@@ -112,6 +119,7 @@ const reducer = createReducer(initialState, (builder) => {
     .addCase(setAuthorizedUser, (state, action) => {
       const user = action.payload;
       state.user = user;
+      writeToken(user?.token);
       state.loginError = false;
     })
     .addCase(setLoginRedirect, (state, action) => {
@@ -122,21 +130,14 @@ const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(addFavorite, (state, action) => {
       state.favorite = [...state.favorite, action.payload];
-      state.places = state.places.map((p) => {
-        if (p.id === action.payload.id) {
-          p.isFavorite = true;
-        }
-        return p;
-      });
+      action.payload.isFavorite = true;
     })
     .addCase(removeFavorite, (state, action) => {
       state.favorite = state.favorite.filter((f) => f.id !== action.payload.id);
-      state.places = state.places.map((p) => {
-        if (p.id === action.payload.id) {
-          p.isFavorite = false;
-        }
-        return p;
-      });
+      action.payload.isFavorite = false;
+    })
+    .addCase(setHoverPlace, (state, action) => {
+      state.hoverPlace = action.payload;
     });
 });
 
@@ -158,3 +159,28 @@ export const useAppDispatch = useDispatch<typeof store.dispatch>;
 export const useAppSelector: TypedUseSelectorHook<
   ReturnType<typeof store.getState>
 > = useSelector;
+
+export const sortedOffersSelector = createSelector(
+  [
+    (state: State) => state.offerSortType,
+    (state: State) => state.places,
+    (state: State) => state.city,
+  ],
+  (sortType, places, city) =>
+    places
+      .filter((offer) => offer.city.name === city.name)
+      .sort((a, b) => {
+        switch (sortType) {
+          case 'Popular':
+            return 0;
+          case 'Price: low to high':
+            return a.price - b.price;
+          case 'Price: high to low':
+            return b.price - a.price;
+          case 'Top rated first':
+            return b.rating - a.rating;
+          default:
+            return 0;
+        }
+      })
+);
