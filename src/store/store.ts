@@ -33,7 +33,6 @@ import { create } from '@/api/api';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { City } from '@/types/city';
 import { AuthorizedUser } from '@/types/user';
-import { writeToken } from '@/storage/token';
 
 export type State = {
   city: City;
@@ -119,7 +118,6 @@ const reducer = createReducer(initialState, (builder) => {
     .addCase(setAuthorizedUser, (state, action) => {
       const user = action.payload;
       state.user = user;
-      writeToken(user?.token);
       state.loginError = false;
     })
     .addCase(setLoginRedirect, (state, action) => {

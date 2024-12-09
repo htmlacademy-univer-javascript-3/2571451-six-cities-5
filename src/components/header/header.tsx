@@ -1,5 +1,5 @@
 import { AppRoute } from '@/const';
-import { setAuthorizedUser } from '@/store/actions';
+import { logout } from '@/store/api-actions';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -59,7 +59,7 @@ function Nav() {
           <li className='header__nav-item'>
             <a
               className='header__nav-link'
-              onClick={() => dispatch(setAuthorizedUser(undefined))}
+              onClick={() => void dispatch(logout())}
             >
               <span className='header__signout'>Sign out</span>
             </a>
