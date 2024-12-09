@@ -182,3 +182,5 @@ export const sortedOffersSelector = createSelector(
         }
       })
 );
+
+export const placesEmptySelector = createSelector([(state: State) => state.places], (places) => !places || places.length === 0);
