@@ -1,5 +1,4 @@
 import { AppRoute } from '@/const';
-import { setLoginRedirect } from '@/store/actions';
 import { addFavoriteOffer, removeFavoriteOffer } from '@/store/api-actions';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { Place } from '@/types/place';
