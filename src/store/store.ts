@@ -7,7 +7,6 @@ import {
   setCurrentOffer404,
   setPlaces,
   setPlacesIsLoading,
-  setFavorite,
   setFavoriteIsLoading,
   setNearby,
   setNearbyIsLoading,
@@ -20,6 +19,7 @@ import {
   addFavorite,
   removeFavorite,
   setHoverPlace,
+  setCommentSubmitError,
 } from './actions';
 import { Offer } from '@/types/offer';
 import { Place } from '@/types/place';
@@ -48,6 +48,7 @@ export type State = {
   nearbyIsLoading: boolean;
   comments: Comment[];
   commentsIsLoading: boolean;
+  commentSubmitError: boolean;
   user?: AuthorizedUser;
   loginError: boolean;
   loginRedirectsTo?: string;
@@ -68,6 +69,7 @@ const initialState: State = {
   nearbyIsLoading: false,
   comments: [],
   commentsIsLoading: false,
+  commentSubmitError: false,
   loginError: false,
 };
 
@@ -94,14 +96,14 @@ const reducer = createReducer(initialState, (builder) => {
     .addCase(setPlacesIsLoading, (state, action) => {
       state.placesIsLoading = action.payload;
     })
-    .addCase(setFavorite, (state, action) => {
-      state.favorite = action.payload;
-    })
     .addCase(setFavoriteIsLoading, (state, action) => {
       state.favoriteIsLoading = action.payload;
     })
     .addCase(setNearby, (state, action) => {
-      state.nearby = action.payload;
+      state.nearby = action.payload.slice(
+        0,
+        Math.min(action.payload.length, 3)
+      );
     })
     .addCase(setNearbyIsLoading, (state, action) => {
       state.nearbyIsLoading = action.payload;
@@ -110,15 +112,29 @@ const reducer = createReducer(initialState, (builder) => {
       state.commentsIsLoading = action.payload;
     })
     .addCase(setComments, (state, action) => {
+      action.payload.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
       state.comments = action.payload;
     })
     .addCase(addComment, (state, action) => {
-      state.comments = [...state.comments, action.payload];
+      state.comments = [action.payload, ...state.comments];
+    })
+    .addCase(setCommentSubmitError, (state, action) => {
+      state.commentSubmitError = action.payload;
     })
     .addCase(setAuthorizedUser, (state, action) => {
       const user = action.payload;
       state.user = user;
       state.loginError = false;
+
+      if (!user) {
+        state.favorite = [];
+        state.favoriteIsLoading = false;
+        state.places.map((p) => {
+          p.isFavorite = false;
+        });
+      }
     })
     .addCase(setLoginRedirect, (state, action) => {
       state.loginRedirectsTo = action.payload;
@@ -127,15 +143,40 @@ const reducer = createReducer(initialState, (builder) => {
       state.loginError = action.payload;
     })
     .addCase(addFavorite, (state, action) => {
-      state.favorite = [...state.favorite, action.payload];
-      action.payload.isFavorite = true;
+      const place = structuredClone(action.payload);
+      place.isFavorite = true;
+
+      if (state.currentOffer?.id === place.id) {
+        state.currentOffer.isFavorite = true;
+      }
+
+      if (!state.favorite.find((p) => p.id === place.id)) {
+        state.favorite.push(place);
+      }
+      state.places.map((p) => {
+        if (p.id === place.id) {
+          p.isFavorite = true;
+        }
+      });
     })
     .addCase(removeFavorite, (state, action) => {
-      state.favorite = state.favorite.filter((f) => f.id !== action.payload.id);
-      action.payload.isFavorite = false;
+      const place = structuredClone(action.payload);
+      place.isFavorite = true;
+
+      if (state.currentOffer?.id === place.id) {
+        state.currentOffer.isFavorite = false;
+      }
+
+      state.favorite = state.favorite.filter((f) => f.id !== place.id);
+      state.places.map((p) => {
+        if (p.id === place.id) {
+          p.isFavorite = false;
+        }
+      });
     })
     .addCase(setHoverPlace, (state, action) => {
-      state.hoverPlace = action.payload;
+      const place = structuredClone(action.payload);
+      state.hoverPlace = place;
     });
 });
 
@@ -183,4 +224,13 @@ export const sortedOffersSelector = createSelector(
       })
 );
 
-export const placesEmptySelector = createSelector([(state: State) => state.places], (places) => !places || places.length === 0);
+export const placesEmptySelector = createSelector(
+  [
+    (state: State) => state.places,
+    (state: State) => state.city,
+    (state: State) => state.placesIsLoading,
+  ],
+  (places, city, loading) =>
+    !loading &&
+    (!places || places.filter((p) => p.city.name === city.name).length === 0)
+);

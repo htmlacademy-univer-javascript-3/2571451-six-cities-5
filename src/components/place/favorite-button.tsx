@@ -1,34 +1,44 @@
+import { AppRoute } from '@/const';
+import { setLoginRedirect } from '@/store/actions';
 import { addFavoriteOffer, removeFavoriteOffer } from '@/store/api-actions';
-import { useAppDispatch } from '@/store/store';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 import { Place } from '@/types/place';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function FavoriteButton({
   place,
   className,
+  classNameActive,
 }: {
   place: Place;
   className?: string;
+  classNameActive?: string;
 }) {
+  const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
-  const [isFavorite, setIsFavorite] = useState(place.isFavorite);
+  const navigate = useNavigate();
 
   return (
     <button
       className={clsx(
         'button',
-        isFavorite && 'place-card__bookmark-button--active',
+        place.isFavorite && classNameActive,
+        place.isFavorite && '',
         className
       )}
       type='button'
       onClick={() => {
-        if (isFavorite) {
+        if (!user) {
+          navigate(AppRoute.Login);
+          return;
+        }
+
+        if (place.isFavorite) {
           dispatch(removeFavoriteOffer(place));
         } else {
           dispatch(addFavoriteOffer(place));
         }
-        setIsFavorite(!isFavorite);
       }}
     >
       <svg className='place-card__bookmark-icon' width='18' height='19'>

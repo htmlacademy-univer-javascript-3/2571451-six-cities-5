@@ -1,4 +1,5 @@
-import { AppRoute } from '@/const';
+import { AppRoute, CITIES } from '@/const';
+import { setCity } from '@/store/actions';
 import { login } from '@/store/api-actions';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { AuthData } from '@/types/user';
@@ -10,7 +11,12 @@ import { z } from 'zod';
 export default function Login(): JSX.Element {
   const validationSchema = z.object({
     email: z.string().min(1).email(),
-    password: z.string().min(1),
+    password: z
+      .string()
+      .regex(
+        /^(?=.*[A-Za-z])(?=.*\d)/,
+        'String must contain at least one letter and one number'
+      ),
   });
 
   const {
@@ -27,11 +33,15 @@ export default function Login(): JSX.Element {
 
   if (user && redirectTo) {
     return <Navigate to={redirectTo}></Navigate>;
+  } else if (user) {
+    return <Navigate to={AppRoute.Main}></Navigate>;
   }
 
   function submit(data: AuthData) {
     dispatch(login(data));
   }
+
+  const randomCity = CITIES[Math.floor(Math.random() * CITIES.length)];
 
   return (
     <div className='page page--gray page--login'>
@@ -103,9 +113,13 @@ export default function Login(): JSX.Element {
           </section>
           <section className='locations locations--login locations--current'>
             <div className='locations__item'>
-              <a className='locations__item-link' href='#'>
-                <span>Amsterdam</span>
-              </a>
+              <Link
+                className='locations__item-link'
+                to={AppRoute.Main}
+                onClick={() => dispatch(setCity(randomCity))}
+              >
+                <span>{randomCity.name}</span>
+              </Link>
             </div>
           </section>
         </div>
