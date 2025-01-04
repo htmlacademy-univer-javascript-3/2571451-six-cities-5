@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
-import leaflet from 'leaflet';
+import leaflet, { Marker, layerGroup } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useMap } from '@/hooks/map';
+import { useMap } from '@/hooks/use-map';
 import { URL_MARKER, URL_MARKER_ACTIVE } from '@/const';
 import { Location } from '@/types/location';
 import { Place } from '@/types/place';
@@ -9,7 +9,7 @@ import { Place } from '@/types/place';
 function Map({
   location,
   places,
-  hoverPlace: selectedPlace,
+  hoverPlace,
 }: {
   location: Location;
   places: Place[];
@@ -32,25 +32,27 @@ function Map({
 
   useEffect(() => {
     if (map) {
+      const markerLayer = layerGroup().addTo(map);
       places.forEach((place) => {
-        leaflet
-          .marker(
-            {
-              lat: place.location.latitude,
-              lng: place.location.longitude,
-            },
-            {
-              icon:
-                place.id === selectedPlace?.id
-                  ? currentCustomIcon
-                  : defaultCustomIcon,
-            }
+        const marker = new Marker({
+          lat: place.location.latitude,
+          lng: place.location.longitude,
+        });
+
+        marker
+          .setIcon(
+            hoverPlace && place.id === hoverPlace.id
+              ? currentCustomIcon
+              : defaultCustomIcon
           )
-          .addTo(map);
+          .addTo(markerLayer);
       });
+
+      return () => {
+        map.removeLayer(markerLayer);
+      };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, places, selectedPlace]);
+  }, [currentCustomIcon, defaultCustomIcon, hoverPlace, map, places]);
 
   return <div style={{ width: '100%', height: '100%' }} ref={mapRef}></div>;
 }

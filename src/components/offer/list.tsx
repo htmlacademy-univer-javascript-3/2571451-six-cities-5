@@ -7,6 +7,7 @@ import { OfferCard } from './card';
 import { SortSelector } from './sort-selector';
 import Spinner from '../ui/spinner/spinner';
 import { setHoverPlace } from '@/store/actions';
+import pluralize from '@/pluralize/pluralize';
 
 export function OfferList() {
   const isLoading = useAppSelector((state) => state.placesIsLoading);
@@ -20,7 +21,9 @@ export function OfferList() {
     <section className='cities__places places'>
       <h2 className='visually-hidden'>Places</h2>
       <b className='places__found'>
-        {offersInSelectedCity.length} places to stay in {selectedCity.name}
+        {offersInSelectedCity.length}{' '}
+        {pluralize('place', 'places', offersInSelectedCity.length)} to stay in{' '}
+        {selectedCity.name}
       </b>
       <SortSelector />
       <div className='cities__places-list places__list tabs__content'>

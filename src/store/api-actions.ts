@@ -20,6 +20,7 @@ import {
   setLoginError,
   addFavorite,
   removeFavorite,
+  setCommentSubmitError,
 } from './actions.ts';
 import { Comment, NewComment } from '@/types/comment.ts';
 import { AuthData, AuthorizedUser } from '@/types/user.ts';
@@ -53,7 +54,9 @@ export const fetchFavoriteOffers = createAsyncThunk<
   dispatch(setFavoriteIsLoading(true));
   try {
     const { data } = await api.get<Offer[]>(ApiRoute.Favorite);
-    dispatch(setFavorite(data));
+    for (const place of data) {
+      dispatch(addFavorite(place));
+    }
   } finally {
     dispatch(setFavoriteIsLoading(false));
   }
@@ -70,10 +73,10 @@ export const addFavoriteOffer = createAsyncThunk<
 >('favorite/add', async (place, { dispatch, extra: api }) => {
   dispatch(setFavoriteIsLoading(true));
   try {
-    const { data } = await api.post<Offer>(
-      `${ApiRoute.Favorite}/${place.id}/1`
-    );
-    dispatch(addFavorite(data));
+    dispatch(addFavorite(place));
+    await api.post<Offer>(`${ApiRoute.Favorite}/${place.id}/1`);
+  } catch {
+    dispatch(removeFavorite(place));
   } finally {
     dispatch(setFavoriteIsLoading(false));
   }
@@ -87,13 +90,13 @@ export const removeFavoriteOffer = createAsyncThunk<
     state: State;
     extra: AxiosInstance;
   }
->('favorite/add', async (place, { dispatch, extra: api }) => {
+>('favorite/remove', async (place, { dispatch, extra: api }) => {
   dispatch(setFavoriteIsLoading(true));
   try {
-    const { data } = await api.post<Offer>(
-      `${ApiRoute.Favorite}/${place.id}/0`
-    );
-    dispatch(removeFavorite(data));
+    dispatch(removeFavorite(place));
+    await api.post<Offer>(`${ApiRoute.Favorite}/${place.id}/0`);
+  } catch {
+    dispatch(addFavorite(place));
   } finally {
     dispatch(setFavoriteIsLoading(false));
   }
@@ -189,7 +192,6 @@ export const login = createAsyncThunk<
     });
     writeToken(response.data.token);
     dispatch(setAuthorizedUser(response.data));
-    dispatch(fetchPlaces());
     dispatch(fetchFavoriteOffers());
   } catch {
     dispatch(setLoginError(true));
@@ -208,7 +210,6 @@ export const logout = createAsyncThunk<
   await api.delete(ApiRoute.Logout);
   writeToken(undefined);
   dispatch(setAuthorizedUser(undefined));
-  dispatch(fetchPlaces());
   dispatch(setFavorite([]));
 });
 
@@ -230,6 +231,9 @@ export const postComment = createAsyncThunk<
         rating,
       });
       dispatch(addComment(res.data));
+      dispatch(setCommentSubmitError(false));
+    } catch {
+      dispatch(setCommentSubmitError(true));
     } finally {
       dispatch(setCommentsIsLoading(false));
     }

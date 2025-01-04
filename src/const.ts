@@ -19,7 +19,7 @@ export const URL_MARKER =
 export const URL_MARKER_ACTIVE =
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/main-pin.svg';
 
-export const API_URL = 'https://14.design.htmlacademy.pro/six-cities';
+export const API_URL = 'https://16.design.htmlacademy.pro/six-cities';
 export const REQUEST_TIMEOUT_MS = 5000;
 
 export enum OfferSortType {

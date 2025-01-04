@@ -11,6 +11,7 @@ import { fetchCurrentOffer } from '@/store/api-actions';
 import Spinner from '@/components/ui/spinner/spinner';
 import { useEffect } from 'react';
 import { FavoriteButton } from '@/components/place/favorite-button';
+import pluralize from '@/pluralize/pluralize';
 
 function NearbyOffers() {
   const nearby = useAppSelector((state) => state.nearby);
@@ -32,7 +33,13 @@ function NearbyMap() {
     return <Spinner />;
   }
 
-  return <Map location={offer.location} places={nearby} hoverPlace={offer} />;
+  return (
+    <Map
+      location={offer.location}
+      places={[...nearby, offer]}
+      hoverPlace={offer}
+    />
+  );
 }
 
 function ReviewsLoader() {
@@ -45,7 +52,11 @@ function ReviewsLoader() {
         Reviews &middot;{' '}
         <span className='reviews__amount'>{reviews.length}</span>
       </h2>
-      {reviewsLoading ? <Spinner /> : <Reviews comments={reviews} />}
+      {reviewsLoading ? (
+        <Spinner />
+      ) : (
+        <Reviews comments={reviews.slice(0, Math.min(10, reviews.length))} />
+      )}
     </>
   );
 }
@@ -82,15 +93,17 @@ export default function Offer(): JSX.Element {
             <section className='offer'>
               <div className='offer__gallery-container container'>
                 <div className='offer__gallery'>
-                  {offer.images.map((image) => (
-                    <div className='offer__image-wrapper' key={image}>
-                      <img
-                        className='offer__image'
-                        src={image}
-                        alt='Photo studio'
-                      />
-                    </div>
-                  ))}
+                  {offer.images
+                    .slice(0, Math.min(offer.images.length, 6))
+                    .map((image) => (
+                      <div className='offer__image-wrapper' key={image}>
+                        <img
+                          className='offer__image'
+                          src={image}
+                          alt='Photo studio'
+                        />
+                      </div>
+                    ))}
                 </div>
               </div>
               <div className='offer__container container'>
@@ -102,12 +115,11 @@ export default function Offer(): JSX.Element {
                   )}
                   <div className='offer__name-wrapper'>
                     <h1 className='offer__name'>{offer.title}</h1>
-                    {user && (
-                      <FavoriteButton
-                        place={offer}
-                        className='offer__bookmark-button'
-                      />
-                    )}
+                    <FavoriteButton
+                      place={offer}
+                      className='offer__bookmark-button'
+                      classNameActive='offer__bookmark-button--active place-card__bookmark-button--active'
+                    />
                   </div>
                   <div className='offer__rating rating'>
                     <div className='offer__stars rating__stars'>
@@ -123,10 +135,12 @@ export default function Offer(): JSX.Element {
                       {offer.type}
                     </li>
                     <li className='offer__feature offer__feature--bedrooms'>
-                      {offer.bedrooms} Bedrooms
+                      {offer.bedrooms}{' '}
+                      {pluralize('Bedroom', 'Bedrooms', offer.bedrooms)}
                     </li>
                     <li className='offer__feature offer__feature--adults'>
-                      Max {offer.maxAdults} adults
+                      Max {offer.maxAdults}{' '}
+                      {pluralize('adult', 'adults', offer.maxAdults)}
                     </li>
                   </ul>
                   <div className='offer__price'>
@@ -167,15 +181,13 @@ export default function Offer(): JSX.Element {
                         <span className='offer__user-status'>Pro</span>
                       )}
                     </div>
-                    {descriptions && descriptions.length > 0 && (
-                      <div className='offer_descriptions'>
-                        {descriptions.map((description) => (
-                          <p key={description} className='offer__text'>
-                            {description}
-                          </p>
-                        ))}
-                      </div>
-                    )}
+                    <div className='offer__description'>
+                      {descriptions?.map((description) => (
+                        <p key={description} className='offer__text'>
+                          {description}
+                        </p>
+                      ))}
+                    </div>
                     <section className='offer__reviews reviews'>
                       <ReviewsLoader />
                       {user && <ReviewForm offerID={id!} />}

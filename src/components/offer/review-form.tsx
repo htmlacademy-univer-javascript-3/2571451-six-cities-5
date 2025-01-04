@@ -1,5 +1,5 @@
 import { postComment } from '@/store/api-actions';
-import { useAppDispatch } from '@/store/store';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 import { NewComment } from '@/types/comment';
 import React, { ChangeEvent, FormEvent } from 'react';
 
@@ -25,6 +25,9 @@ export function ReviewForm({ offerID }: { offerID: string }) {
 
   const dispatch = useAppDispatch();
 
+  const commentsLoading = useAppSelector((state) => state.commentsIsLoading);
+  const commentsError = useAppSelector((state) => state.commentSubmitError);
+
   const submit = (evt: FormEvent) => {
     evt.preventDefault();
     dispatch(
@@ -33,7 +36,14 @@ export function ReviewForm({ offerID }: { offerID: string }) {
         comment: reviewData.review,
         rating: parseInt(reviewData.rating, 10),
       } as NewComment)
-    );
+    ).then(() => {
+      if (!commentsError) {
+        setReviewData({
+          rating: '',
+          review: '',
+        });
+      }
+    });
   };
 
   return (
@@ -50,6 +60,7 @@ export function ReviewForm({ offerID }: { offerID: string }) {
           type='radio'
           checked={reviewData.rating === '5'}
           onChange={handleRatingChange}
+          disabled={commentsLoading}
         />
         <label
           htmlFor='5-stars'
@@ -69,6 +80,7 @@ export function ReviewForm({ offerID }: { offerID: string }) {
           type='radio'
           checked={reviewData.rating === '4'}
           onChange={handleRatingChange}
+          disabled={commentsLoading}
         />
         <label
           htmlFor='4-stars'
@@ -88,6 +100,7 @@ export function ReviewForm({ offerID }: { offerID: string }) {
           type='radio'
           checked={reviewData.rating === '3'}
           onChange={handleRatingChange}
+          disabled={commentsLoading}
         />
         <label
           htmlFor='3-stars'
@@ -107,6 +120,7 @@ export function ReviewForm({ offerID }: { offerID: string }) {
           type='radio'
           checked={reviewData.rating === '2'}
           onChange={handleRatingChange}
+          disabled={commentsLoading}
         />
         <label
           htmlFor='2-stars'
@@ -122,13 +136,14 @@ export function ReviewForm({ offerID }: { offerID: string }) {
           className='form__rating-input visually-hidden'
           name='rating'
           value='1'
-          id='1-star'
+          id='1-stars'
           type='radio'
           checked={reviewData.rating === '1'}
           onChange={handleRatingChange}
+          disabled={commentsLoading}
         />
         <label
-          htmlFor='1-star'
+          htmlFor='1-stars'
           className='reviews__rating-label form__rating-label'
           title='terribly'
         >
@@ -144,6 +159,7 @@ export function ReviewForm({ offerID }: { offerID: string }) {
         placeholder='Tell how was your stay, what you like and what can be improved'
         value={reviewData.review}
         onChange={handleReviewChange}
+        disabled={commentsLoading}
       />
       <div className='reviews__button-wrapper'>
         <p className='reviews__help'>
@@ -151,10 +167,20 @@ export function ReviewForm({ offerID }: { offerID: string }) {
           <span className='reviews__star'>rating</span> and describe your stay
           with at least <b className='reviews__text-amount'>50 characters</b>.
         </p>
+        {commentsError && (
+          <p className='reviews__help'>
+            There was an error last time you tried to submit your review.
+          </p>
+        )}
         <button
           className='reviews__submit form__submit button'
           type='submit'
-          disabled={reviewData.rating === '' || reviewData.review.length < 50}
+          disabled={
+            reviewData.rating === '' ||
+            reviewData.review.length < 50 ||
+            reviewData.review.length > 300 ||
+            commentsLoading
+          }
         >
           Submit
         </button>

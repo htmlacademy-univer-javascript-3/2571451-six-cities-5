@@ -49,3 +49,7 @@ export const setLoginRedirect = createAction<string | undefined>(
 export const setLoginError = createAction<boolean>('login/setError');
 
 export const setHoverPlace = createAction<Place | undefined>('place/hover');
+
+export const setCommentSubmitError = createAction<boolean>(
+  'comment/submitError'
+);
